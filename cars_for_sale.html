@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Auction Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-500 text-white">
+    <!-- Header -->
+    <header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white" style="background-image: url('./assets/images/headerimage.jpg');">
+        <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
+        <div class="relative z-10 text-center">
+            <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
+            <p class="text-lg">Find the car of your dreams or list your own!</p>
+        </div>
+        <nav class="relative z-10 mt-4">
+            <ul class="flex space-x-8">
+                <li><a class="text-white hover:text-gray-300" href="./index.html">Home</a></li>
+                <li><a class="text-white hover:text-gray-300" href="./car_listing.html">List Your Car</a></li>
+                <li><a class="text-white hover:text-gray-300" href="./contact_form.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Auction Listings -->
+    <section id="auction-list" class="p-8 bg-white text-blue-500">
+        <h2 class="text-2xl font-semibold text-center mb-6">Cars Available for Auction</h2>
+        <ul class="flex flex-col space-y-6">
+            <!-- Car 1 -->
+            <li class="bg-gray-100 p-6 rounded-lg shadow-md flex items-center w-full">
+                <img src="./assets/images/day-exterior-4.png" alt="Toyota Corolla" class="w-48 h-auto mr-6">
+                <div>
+                    <h3 class="text-xl font-bold">Car 1</h3>
+                    <p><strong>Make:</strong> Toyota</p>
+                    <p><strong>Model:</strong> Corolla</p>
+                    <p><strong>Year:</strong> 2015</p>
+                    <p><strong>Starting Price:</strong> $10,000</p>
+                    <p><strong>Description:</strong> A reliable family car.</p>
+                    <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mt-4">Place a Bid</button>
+                </div>
+                <div id="timer1" class="ml-auto text-center text-blue-800 font-bold">Loading timer...</div>
+            </li>
+            <!-- Car 2 -->
+            <li class="bg-gray-100 p-6 rounded-lg shadow-md flex items-center w-full">
+                <img src="./assets/images/images.jpeg" alt="BMW 320i" class="w-48 h-auto mr-6">
+                <div>
+                    <h3 class="text-xl font-bold">Car 2</h3>
+                    <p><strong>Make:</strong> BMW</p>
+                    <p><strong>Model:</strong> 320i</p>
+                    <p><strong>Year:</strong> 2018</p>
+                    <p><strong>Starting Price:</strong> $20,000</p>
+                    <p><strong>Description:</strong> Sporty sedan with luxury features.</p>
+                    <button class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mt-4">Place a Bid</button>
+                </div>
+                <div id="timer2" class="ml-auto text-center text-blue-800 font-bold">Loading timer...</div>
+            </li>
+        </ul>
+    </section>
+    <script>
+        // Interactive Auction Timer
+        function startCountdown(endTime, element) {
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    element.innerHTML = 'Auction Ended';
+                } else {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    element.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }, 1000);
+        }
+
+        // Start countdown timers for each car
+        startCountdown(new Date('2024-11-11T23:59:59').getTime(), document.getElementById('timer1'));
+        startCountdown(new Date('2024-11-11T23:59:59').getTime(), document.getElementById('timer2'));
+
+        // Bid Confirmation Popup
+        document.querySelectorAll('button.bg-blue-500').forEach(button => {
+            button.addEventListener('click', function(event) {
+                if (!confirm('Are you sure you want to place this bid?')) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Auction Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-500 text-white">
+    <!-- Header -->
+    <header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white" style="background-image: url('./assets/images/headerimage.jpg');">
+        <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
+        <div class="relative z-10 text-center">
+            <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
+            <p class="text-lg">Find the car of your dreams or list your own!</p>
+        </div>
+        <div class="relative z-10 mt-4 flex justify-center w-full">
+            <nav>
+                <ul class="flex space-x-8">
+                    <li><a class="text-white hover:text-gray-300" href="./index.html">Home</a></li>
+                    <li><a class="text-white hover:text-gray-300" href="./cars_for_sale.html">View Auctions</a></li>
+                    <li><a class="text-white hover:text-gray-300" href="./contact_form.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- Listing Form -->
+    <section id="list-car" class="p-8 bg-center bg-cover text-blue-500" style="background-image: url('./assets/images/car_listing_bg.jpg');">
+        <h2 class="text-2xl font-semibold text-center mb-6">List Your Car for Auction</h2>
+        <form action="/submit-car" method="POST" enctype="multipart/form-data" class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="car-make" class="block mb-2">Car Make</label>
+                <input type="text" class="w-full p-2 border border-gray-300 rounded" id="car-make" name="car-make" required>
+            </div>
+            <div>
+                <label for="car-model" class="block mb-2">Car Model</label>
+                <input type="text" class="w-full p-2 border border-gray-300 rounded" id="car-model" name="car-model" required>
+            </div>
+            <div>
+                <label for="car-year" class="block mb-2">Year</label>
+                <input type="number" class="w-full p-2 border border-gray-300 rounded" id="car-year" name="car-year" required>
+            </div>
+            <div>
+                <label for="starting-price" class="block mb-2">Starting Auction Price</label>
+                <input type="number" class="w-full p-2 border border-gray-300 rounded" id="starting-price" name="starting-price" required>
+            </div>
+            <div class="col-span-2">
+                <label for="car-description" class="block mb-2">Description</label>
+                <textarea id="car-description" name="car-description" class="w-full p-2 border border-gray-300 rounded" rows="5" required></textarea>
+            </div>
+            <div class="col-span-2 flex flex-col items-center bg-gray-50 border border-gray-300 rounded-lg p-6 shadow-lg">
+                <label for="car-image" class="block text-lg font-semibold mb-2 text-blue-500">Upload Car Image</label>
+                <input type="file" class="hidden" id="car-image" name="car-image" accept="image/*" required>
+                <label for="car-image" class="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 01-2.828 0L3 9.828M7 5h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" />
+                    </svg>
+                    Choose Image
+                </label>
+                <p class="mt-3 text-gray-500 text-sm text-center">PNG or JPG format. Max size 5 MB.</p>
+            </div>
+            <div class="col-span-2 text-center">
+                <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Submit Car</button>
+            </div>
+        </form>
+    </section>
+    <script>
+        // Dynamic Image Preview
+        const imageInput = document.getElementById('car-image');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(event) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const preview = document.createElement('img');
+                    preview.src = reader.result;
+                    preview.style.maxWidth = '200px';
+                    preview.style.marginTop = '10px';
+                    document.querySelector('.col-span-2').appendChild(preview);
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            });
+        }
+    </script>
+</body>
+</html>

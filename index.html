@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Auction Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-500 text-white">
+    <!-- Header with Background Image -->
+    <header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white" style="background-image: url('./assets/images/headerimage.jpg');">
+        <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
+        <div class="relative z-10 text-center">
+            <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
+            <p class="text-lg">Find the car of your dreams or list your own!</p>
+        </div>
+        <nav class="relative z-10 mt-4">
+            <ul class="flex space-x-8">
+                <li><a class="text-white hover:text-gray-300" href="./car_listing.html">List Your Car</a></li>
+                <li><a class="text-white hover:text-gray-300" href="./cars_for_sale.html">View Auctions</a></li>
+                <li><a class="text-white hover:text-gray-300" href="./contact_form.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Website Description -->
+    <section class="p-8 text-center bg-white text-blue-500">
+        <h2 class="text-2xl font-semibold mb-4">About Our Platform</h2>
+        <p class="max-w-2xl mx-auto">
+            Our Car Auction Platform provides an easy, secure, and reliable way to buy and sell cars. Whether you're looking to
+            find your next vehicle or place your car up for auction, we ensure a smooth experience with the tools and resources you need.
+            Start your journey with us today!
+        </p>
+    </section>
+    <!-- Tips and Tricks Section -->
+    <section class="p-8 text-center bg-gray-100 text-blue-500">
+        <h2 class="text-2xl font-semibold mb-4">Car Buying and Selling Tips</h2>
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold">Tip #1: Know the Car’s History</h3>
+                <p class="mt-2 text-gray-700">Always request a detailed history report when buying a used car. This includes any past accidents, repairs, and mileage verification.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold">Tip #2: Set a Fair Price</h3>
+                <p class="mt-2 text-gray-700">When selling your car, research similar models to determine a competitive price. A fair price attracts more bidders and potential buyers.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold">Tip #3: Inspect the Car Thoroughly</h3>
+                <p class="mt-2 text-gray-700">Look at the car's exterior, interior, and under the hood. Ensure the engine and other key components are in good condition.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold">Tip #4: Understand Auction Rules</h3>
+                <p class="mt-2 text-gray-700">Familiarize yourself with the auction process, bid increments, and terms to make informed decisions.</p>
+            </div>
+        </div>
+    </section>
+    <!-- FAQ Section -->
+    <section class="p-8 bg-white text-blue-500">
+        <h2 class="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
+        <div class="max-w-2xl mx-auto">
+            <div class="faq-question cursor-pointer">What is a car auction?</div>
+            <div class="faq-answer hidden">A car auction is where buyers place competitive bids on cars...</div>
+            <div class="faq-question cursor-pointer mt-4">How do I participate in an auction?</div>
+            <div class="faq-answer hidden">To participate, create an account, browse cars, and place a bid.</div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer id="contact" class="bg-blue-600 text-white p-8 text-center">
+        <h2 class="text-2xl font-semibold">Contact Us</h2>
+        <p>Email: support@carauction.com</p>
+        <p>Phone: 07 n-am cartela</p>
+    </footer>
+    <script>
+        // FAQ Toggle Function
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.addEventListener('click', function() {
+                this.nextElementSibling.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
