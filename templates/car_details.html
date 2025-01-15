@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function startCountdown(endTime, elementId) {
+            const timerElement = document.getElementById(elementId);
+
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = new Date(endTime).getTime() - now;
+
+                if (distance <= 0) {
+                    clearInterval(interval);
+                    timerElement.innerHTML = "Auction Ended";
+                } else {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    if (days > 0) {
+                        timerElement.innerHTML = `${days}d ${hours}h`;
+                    } else if (hours > 0) {
+                        timerElement.innerHTML = `${hours}h ${minutes}m`;
+                    } else {
+                        timerElement.innerHTML = `${minutes}m ${seconds}s`;
+                    }
+                }
+            }, 1000);
+        }
+    </script>
+</head>
+<body class="bg-blue-500 text-white min-h-screen">
+<header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white"
+        style="background-image: url('{{ url_for('static', filename='assets/images/headerimage.jpg') }}');">
+    <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
+    <div class="relative z-10 text-center">
+        <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
+        <p class="text-lg">Find the car of your dreams or list your own!</p>
+    </div>
+    <nav class="relative z-10 mt-4">
+        <ul class="flex space-x-8">
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('home') }}">Home</a></li>
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('car_listing') }}">List Your Car</a></li>
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
+            {% if session.get('user_id') %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('login') }}">Login</a></li>
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('contact_form') }}">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="container mx-auto p-6">
+    <div class="bg-white text-gray-800 rounded-lg shadow-lg max-w-3xl mx-auto p-6">
+        <h2 class="text-3xl font-bold mb-4">{{ car.title }}</h2>
+
+        {% if car_images %}
+        <div id="carousel-{{ car.id }}" class="relative w-full h-72 overflow-hidden rounded-lg mb-4">
+            {% for image_path in car_images %}
+            <div class="absolute inset-0 transition-opacity duration-500 {% if loop.first %}opacity-100{% else %}opacity-0{% endif %}" data-index="{{ loop.index0 }}">
+                <img src="{{ url_for('static', filename=image_path) }}" alt="{{ car.title }}" class="w-full h-full object-cover">
+            </div>
+            {% endfor %}
+            <!-- Navigation Arrows -->
+            <button onclick="prevImage('{{ car.id }}')" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-r">&#10094;</button>
+            <button onclick="nextImage('{{ car.id }}')" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-l">&#10095;</button>
+        </div>
+        <script>
+            let currentImageIndex{{ car.id }} = 0;
+            const images{{ car.id }} = document.querySelectorAll("#carousel-{{ car.id }} [data-index]");
+
+            function showImage{{ car.id }}(index) {
+                images{{ car.id }}.forEach((img, i) => {
+                    img.style.opacity = i === index ? "1" : "0";
+                });
+            }
+
+            function nextImage(carId) {
+                currentImageIndex{{ car.id }} = (currentImageIndex{{ car.id }} + 1) % images{{ car.id }}.length;
+                showImage{{ car.id }}(currentImageIndex{{ car.id }});
+            }
+
+            function prevImage(carId) {
+                currentImageIndex{{ car.id }} = (currentImageIndex{{ car.id }} - 1 + images{{ car.id }}.length) % images{{ car.id }}.length;
+                showImage{{ car.id }}(currentImageIndex{{ car.id }});
+            }
+        </script>
+        {% endif %}
+
+        <p class="text-lg mb-4"><strong>Description:</strong> {{ car.description }}</p>
+        <p class="text-lg mb-4"><strong>Starting Price:</strong> €{{ car.starting_price }}</p>
+        <p class="text-lg mb-4"><strong>Current Bid:</strong> €{{ car.current_bid or car.starting_price }}</p>
+        <p class="text-lg mb-4"><strong>Highest Bidder:</strong> {{ car.highest_bidder or "No bids yet" }}</p>
+        <p class="text-lg mb-4"><strong>Auction End Time:</strong></p>
+        <p id="timer-{{ car.id }}" class="text-red-500 font-bold text-lg mb-4"></p>
+        <script>
+            startCountdown("{{ car.auction_end_time }}", "timer-{{ car.id }}");
+        </script>
+
+        <!-- Place Bid Form -->
+        <form action="{{ url_for('place_bid') }}" method="POST" class="mt-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="car_id" value="{{ car.id }}">
+            <label for="bid_increment" class="block text-lg font-semibold mb-2">Enter Your Bid Increment (Minimum
+                €100):</label>
+            <input type="number" name="bid_increment" id="bid_increment" min="100" step="1" required
+                   class="w-full p-2 border rounded-md mb-4">
+            <button type="submit"
+                    class="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
+                Place Bid
+            </button>
+        </form>
+
+        <!-- Go Back Button -->
+        <button onclick="window.history.back()"
+                class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mt-6">
+            Go Back
+        </button>
+    </div>
+</div>
+</body>
+</html>

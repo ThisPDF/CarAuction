@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-500 text-white min-h-screen items-center justify-center">
+<header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white"
+        style="background-image: url('{{ url_for('static', filename='assets/images/headerimage.jpg') }}');">
+    <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
+    <div class="relative z-10 text-center">
+        <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
+        <p class="text-lg">Find the car of your dreams or list your own!</p>
+    </div>
+    <nav class="relative z-10 mt-4">
+        <ul class="flex space-x-8">
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('home') }}">Home</a></li>
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('car_listing') }}">List Your Car</a></li>
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
+            {% if session.get('user_id') %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('login') }}">Login</a></li>
+            {% endif %}
+            <li><a class="text-white hover:text-gray-300" href="{{ url_for('contact_form') }}">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="flex justify-center items-center flex-grow mt-2">
+    <div class="bg-white text-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h1 class="text-2xl font-bold mb-4 text-center">Create an Account</h1>
+        <form method="POST" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div>
+                <label for="username" class="block text-sm font-semibold">Username</label>
+                <input type="text" id="username" name="username" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-semibold">Email</label>
+                <input type="email" id="email" name="email" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-semibold">Password</label>
+                <input type="password" id="password" name="password" class="w-full p-2 border rounded-md" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                Register
+            </button>
+        </form>
+        <p class="text-sm text-center mt-4">
+            Already have an account?
+            <a href="{{ url_for('login') }}" class="text-blue-500 hover:underline">Login</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
