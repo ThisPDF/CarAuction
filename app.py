@@ -45,7 +45,7 @@ def send_email(recipient, subject, body):
     Adjust the SMTP server and credentials to your environment.
     """
     sender_email = "nu_am_facut_asta@gmail.com"
-    sender_password = "n-am e dor de test"
+    sender_password = "n-am e doar de test"
 
     msg = MIMEMultipart()
     msg["From"] = sender_email
