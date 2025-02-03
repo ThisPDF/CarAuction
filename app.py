@@ -1,18 +1,24 @@
 import os
 import sqlite3
 import smtplib
+import dotenv
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Initialize Flask app
+
+load_dotenv()
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'
-app.config['WTF_CSRF_SECRET_KEY'] = 'anothersecretkey'
+
+app.secret_key = os.environ.get('SECRET_KEY')
+app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('CSRF_SECRET_KEY')
 csrf = CSRFProtect(app)
 
 DATABASE = 'app.db'
@@ -26,6 +32,38 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+def get_photos():
+    import requests
+
+    ACCESS_KEY = os.environ.get('UNSPLASH_API')
+    url = "https://api.unsplash.com/search/photos"
+
+    params = {
+        "query": "cars",
+        "per_page": 1,  # Number of images
+        "orientation": "landscape"  # Optional: portrait, squarish
+    }
+
+    headers = {
+        "Authorization": f"Client-ID {ACCESS_KEY}"
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        results = data.get("results")
+        if results and len(results) > 0:
+            # Get a URL from the first result; you can choose a different size if you prefer.
+            return results[0]["urls"]["regular"]
+        else:
+            # Fallback image URL or an empty string
+            return ""
+    else:
+        print("Error:", response.json())
+        return ""
+
 
 # ------------------------------------------------------------------------------
 # 2. Helper functions
@@ -124,7 +162,7 @@ def home():
             ).fetchall()
             car_images[auction['id']] = [img['image_path'] for img in images]
 
-    return render_template('index.html', featured_auctions=featured_auctions, ending_soon=ending_soon, car_images=car_images)
+    return render_template('index.html', featured_auctions=featured_auctions, ending_soon=ending_soon, car_images=car_images, background_image= get_photos())
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
