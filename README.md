@@ -47,12 +47,12 @@ Proiect_TW/
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ThisPDF/CarAuction.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd Proiect_TW
+   cd CARAUCTION
    ```
 
 3. Install dependencies:
