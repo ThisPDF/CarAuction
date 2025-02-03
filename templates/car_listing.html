@@ -5,72 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Your Car</title>
     <script src="https://cdn.tailwindcss.com"></script>
-<style>
-/* Add responsive styles here */
-body { margin: 0; font-family: Arial, sans-serif; }
-</style>
 </head>
-<body class="bg-blue-500 text-white min-h-screen flex flex-col">
-<header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white"
-        style="background-image: url('{{ url_for('static', filename='assets/images/headerimage.jpg') }}');">
-    <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
-    <div class="relative z-10 text-center">
-        <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
-        <p class="text-lg">Find the car of your dreams or list your own!</p>
-    </div>
-    <nav class="relative z-10 mt-4">
-        <ul class="flex space-x-8">
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('home') }}">Home</a></li>
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('car_listing') }}">List Your Car</a></li>
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
-            {% if session.get('user_id') %}
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('logout') }}">Logout</a></li>
-            {% else %}
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('login') }}">Login</a></li>
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('register') }}">Register</a></li>
-            {% endif %}
-            <li><a class="text-white hover:text-gray-300" href="{{ url_for('contact_form') }}">Contact</a></li>
-        </ul>
-    </nav>
-</header>
+<body class="bg-gray-100">
 
-<!-- Main Content -->
-<div class="flex justify-center items-center flex-grow">
-    <div class="bg-white text-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 class="text-2xl font-bold mb-4 text-center">List Your Car</h1>
-        <form method="POST" action="{{ url_for('car_listing') }}" enctype="multipart/form-data" class="space-y-4">
+<!-- Navbar -->
+<nav class="fixed top-0 w-full bg-white shadow-md z-50 p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-600">Carsfy</h1>
+        <ul class="hidden md:flex space-x-6">
+            <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('home') }}">Home</a></li>
+            <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
+            <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('car_listing') }}">List Your Car</a></li>
+            <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- List Car Section -->
+<div class="flex justify-center items-center min-h-screen pt-20">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-4">List Your Car</h1>
+        <form method="POST" action="{{ url_for('car_listing') }}" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div>
-                <label for="title" class="block text-sm font-semibold">Car Title</label>
-                <input type="text" id="title" name="title" class="w-full p-2 border rounded-md" required>
-            </div>
-            <div>
-                <label for="description" class="block text-sm font-semibold">Description</label>
-                <textarea id="description" name="description" class="w-full p-2 border rounded-md" rows="3"></textarea>
-            </div>
-            <div>
-                <label for="starting_price" class="block text-sm font-semibold">Starting Price (€)</label>
-                <input type="number" id="starting_price" name="starting_price" step="0.01" min="0" class="w-full p-2 border rounded-md" required>
-            </div>
-            <div>
-                <label for="images" class="block text-sm font-semibold">Car Images (Upload Multiple)</label>
-                <input type="file" id="images" name="images" accept="image/*" class="w-full p-2 border rounded-md" multiple>
-                <small class="text-gray-600">You can upload multiple images by selecting multiple files.</small>
-            </div>
-            <div>
-                <label for="auction_duration" class="block text-sm font-semibold">Auction Duration</label>
-                <select id="auction_duration" name="auction_duration" class="w-full p-2 border rounded-md" required>
-                    <option value="24h">24 Hours</option>
-                    <option value="48h">48 Hours</option>
-                    <option value="1w">1 Week</option>
-                    <option value="1m">1 Month</option>
-                </select>
-            </div>
-            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+
+            <label class="block text-gray-700 font-semibold mb-1">Car Title</label>
+            <input type="text" name="title" class="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400" required>
+
+            <label class="block text-gray-700 font-semibold mb-1">Description</label>
+            <textarea name="description" class="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400" required></textarea>
+
+            <label class="block text-gray-700 font-semibold mb-1">Starting Price (€)</label>
+            <input type="number" name="starting_price" class="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400" required>
+
+            <label class="block text-gray-700 font-semibold mb-1">Auction Duration</label>
+            <select name="auction_duration" class="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400" required>
+                <option value="24h">24 Hours</option>
+                <option value="48h">48 Hours</option>
+                <option value="1w">1 Week</option>
+                <option value="1m">1 Month</option>
+            </select>
+
+            <label class="block text-gray-700 font-semibold mb-1">Upload Images</label>
+            <input type="file" name="images" multiple class="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400" required>
+
+            <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-200">
                 Submit Car
             </button>
         </form>
     </div>
 </div>
+
 </body>
 </html>

@@ -1,139 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-<style>
-/* Add responsive styles here */
-body { margin: 0; font-family: Arial, sans-serif; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Add responsive styles here */
+    body { margin: 0; font-family: Arial, sans-serif; }
+  </style>
 </head>
 <body class="bg-gray-100">
-    <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
-        <nav class="relative z-10 mt-4">
-            <ul class="flex space-x-8">
-                <a class="text-black hover:text-blue-300" href="{{ url_for('home') }}" title="Go to Home">Home</a>
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('car_listing') }}">List Your Car</a></li>
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
-                {% if session.get('user_id') %}
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('login') }}">Login</a></li>
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('register') }}">Register</a></li>
-                {% endif %}
-                <li><a class="text-black hover:text-blue-300" href="{{ url_for('contact_form') }}">Contact</a></li>
-            </ul>
-        </nav>
-        <br>
+  <div class="container mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
+    <nav class="relative z-10 mt-4">
+      <ul class="flex space-x-8">
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('home') }}" title="Go to Home">Home</a>
+        </li>
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('car_listing') }}">List Your Car</a>
+        </li>
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a>
+        </li>
+        {% if session.get('user_id') %}
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+        {% else %}
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('login') }}">Login</a>
+        </li>
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('register') }}">Register</a>
+        </li>
+        {% endif %}
+        <li>
+          <a class="text-black hover:text-blue-300" href="{{ url_for('contact_form') }}">Contact</a>
+        </li>
+      </ul>
+    </nav>
+    <br />
 
-        <!-- User Management Section -->
-        <h2 class="text-xl font-semibold mb-4">User Management</h2>
-        <table class="min-w-full bg-white border">
-            <thead>
-                <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
-                    <th class="py-2 px-4 border">ID</th>
-                    <th class="py-2 px-4 border">Username</th>
-                    <th class="py-2 px-4 border">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td class="py-2 px-4 border">{{ user.id }}</td>
-                    <td class="py-2 px-4 border">{{ user.username }}</td>
-                    <td class="py-2 px-4 border">
-                        <!-- Update User Form -->
-                        <form method="POST" action="{{ url_for('update_user', user_id=user.id) }}" class="inline">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="text" name="username" placeholder="New Username" class="border px-2 py-1">
-                            <input type="password" name="password" placeholder="New Password" class="border px-2 py-1">
-                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
-                        </form>
-                        <!-- Delete User Button -->
-                        <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" class="inline ml-2">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- User Management Section -->
+    <h2 class="text-xl font-semibold mb-4">User Management</h2>
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
+          <th class="py-2 px-4 border">ID</th>
+          <th class="py-2 px-4 border">Username</th>
+          <th class="py-2 px-4 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td class="py-2 px-4 border">{{ user["id"] }}</td>
+          <td class="py-2 px-4 border">{{ user["username"] }}</td>
+          <td class="py-2 px-4 border">
+            <!-- Update User Form -->
+            <form method="POST" action="{{ url_for('update_user', user_id=user['id']) }}" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="text" name="username" placeholder="New Username" class="border px-2 py-1" />
+              <input type="password" name="password" placeholder="New Password" class="border px-2 py-1" />
+              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+            </form>
+            <!-- Delete User Button -->
+            <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}" class="inline ml-2">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        <!-- Cars (Auctions) Management Section -->
-        <h2 class="text-xl font-semibold mt-8 mb-4">Auction Management</h2>
-        <table class="min-w-full bg-white border">
-            <thead>
-            <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
-                <th class="py-2 px-4 border">ID</th>
-                <th class="py-2 px-4 border">Title</th>
-                <th class="py-2 px-4 border">Current Bid</th>
-                <th class="py-2 px-4 border">Auction End</th>
-                <th class="py-2 px-4 border">Highest Bidder Email</th>
-                <th class="py-2 px-4 border">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for car in cars %}
-            <tr>
-                <td class="py-2 px-4 border">{{ car.id }}</td>
-                <td class="py-2 px-4 border">{{ car.title }}</td>
-                <td class="py-2 px-4 border">{{ car.current_bid or 'N/A' }}</td>
-                <td class="py-2 px-4 border">{{ car.auction_end_time }}</td>
-                <td class="py-2 px-4 border">{{ car.highest_bidder_email or 'No Bids' }}</td>
-                <td class="py-2 px-4 border">
-                    <!-- Update Auction Time Form -->
-                    <form method="POST" action="{{ url_for('update_auction_time', car_id=car.id) }}" class="inline">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <input type="text" name="new_end_time" placeholder="YYYY-MM-DD HH:MM:SS"
-                               class="border px-2 py-1">
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Time</button>
-                    </form>
-                    <!-- Delete Auction Button -->
-                    <form method="POST" action="{{ url_for('delete_auction', car_id=car.id) }}" class="inline ml-2">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <!-- Auction Management Section -->
+    <h2 class="text-xl font-semibold mt-8 mb-4">Auction Management</h2>
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
+          <th class="py-2 px-4 border">ID</th>
+          <th class="py-2 px-4 border">Title</th>
+          <th class="py-2 px-4 border">Current Bid</th>
+          <th class="py-2 px-4 border">Auction End</th>
+          <th class="py-2 px-4 border">Highest Bidder Email</th>
+          <th class="py-2 px-4 border">Featured</th>
+          <th class="py-2 px-4 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for car in cars %}
+        <tr>
+          <td class="py-2 px-4 border">{{ car["id"] }}</td>
+          <td class="py-2 px-4 border">{{ car["title"] }}</td>
+          <td class="py-2 px-4 border">{{ car["current_bid"] or 'N/A' }}</td>
+          <td class="py-2 px-4 border">{{ car["auction_end_time"] }}</td>
+          <td class="py-2 px-4 border">{{ car["highest_bidder_email"] or 'No Bids' }}</td>
+          <td class="py-2 px-4 border">
+            {% if car["featured"]|default(0)|int == 1 %}
+              Yes
+            {% else %}
+              No
+            {% endif %}
+          </td>
+          <td class="py-2 px-4 border">
+            <!-- Update Auction Time Form -->
+            <form method="POST" action="{{ url_for('update_auction_time', car_id=car['id']) }}" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="text" name="new_end_time" class="border px-2 py-1 update-datetime"
+                     data-raw="{{ car['auction_end_time'] }}" placeholder="YYYY-MM-DD HH:MM:SS" />
+              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                Update Time
+              </button>
+            </form>
+            <!-- Delete Auction Button -->
+            <form method="POST" action="{{ url_for('delete_auction', car_id=car['id']) }}" class="inline ml-2">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">
+                Delete
+              </button>
+            </form>
+            <!-- Feature/Unfeature Auction Button -->
+            {% set is_featured = car["featured"]|default(0)|int == 1 %}
+            <form method="POST"
+                  action="{{ url_for('unfeature_auction' if is_featured else 'feature_auction', car_id=car['id']) }}"
+                  class="inline ml-2">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit"
+                      class="{{ 'bg-yellow-500' if is_featured else 'bg-green-500' }} text-white px-4 py-2 rounded">
+                {{ 'Unfeature' if is_featured else 'Feature' }}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
+    <!-- Contact Messages Section -->
+    <h2 class="text-xl font-semibold mt-8 mb-4">Contact Messages</h2>
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
+          <th class="py-2 px-4 border">ID</th>
+          <th class="py-2 px-4 border">Name</th>
+          <th class="py-2 px-4 border">Email</th>
+          <th class="py-2 px-4 border">Message</th>
+          <th class="py-2 px-4 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for message in messages %}
+        <tr>
+          <td class="py-2 px-4 border">{{ message["id"] }}</td>
+          <td class="py-2 px-4 border">{{ message["name"] }}</td>
+          <td class="py-2 px-4 border">{{ message["email"] }}</td>
+          <td class="py-2 px-4 border">{{ message["message"] }}</td>
+          <td class="py-2 px-4 border">
+            <!-- Delete Message Button -->
+            <form method="POST" action="{{ url_for('delete_message', message_id=message['id']) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-        <!-- Contact Messages Section -->
-        <h2 class="text-xl font-semibold mt-8 mb-4">Contact Messages</h2>
-        <table class="min-w-full bg-white border">
-            <thead>
-                <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
-                    <th class="py-2 px-4 border">ID</th>
-                    <th class="py-2 px-4 border">Name</th>
-                    <th class="py-2 px-4 border">Email</th>
-                    <th class="py-2 px-4 border">Message</th>
-                    <th class="py-2 px-4 border">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for message in messages %}
-                <tr>
-                    <td class="py-2 px-4 border">{{ message.id }}</td>
-                    <td class="py-2 px-4 border">{{ message.name }}</td>
-                    <td class="py-2 px-4 border">{{ message.email }}</td>
-                    <td class="py-2 px-4 border">{{ message.message }}</td>
-                    <td class="py-2 px-4 border">
-                        <!-- Delete Message Button -->
-                        <form method="POST" action="{{ url_for('delete_message', message_id=message.id) }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  <!-- JavaScript to Pre-Populate and Format Dates for Human Operation -->
+  <script>
+    // Parse a backend date string "YYYY-MM-DD HH:MM:SS" into a Date object.
+    function parseBackendDate(dateStr) {
+      return new Date(dateStr.replace(' ', 'T'));
+    }
+
+    // Format a Date object as "YYYY-MM-DD HH:MM:SS"
+    function formatDate(date) {
+      const pad = num => (num < 10 ? '0' + num : num);
+      const year = date.getFullYear();
+      const month = pad(date.getMonth() + 1);
+      const day = pad(date.getDate());
+      const hours = pad(date.getHours());
+      const minutes = pad(date.getMinutes());
+      const seconds = pad(date.getSeconds());
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // On page load, pre-populate each update datetime text field with a formatted date.
+    document.addEventListener('DOMContentLoaded', function() {
+      const datetimeInputs = document.querySelectorAll('.update-datetime');
+      datetimeInputs.forEach(function(input) {
+        const rawDate = input.getAttribute('data-raw');
+        if (rawDate) {
+          const dateObj = parseBackendDate(rawDate);
+          if (!isNaN(dateObj.getTime())) {
+            input.value = formatDate(dateObj);
+          } else {
+            input.value = rawDate;
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>

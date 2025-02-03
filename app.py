@@ -101,8 +101,30 @@ def cleanup_expired_auctions():
 
 @app.route('/')
 def home():
-    """Render the home page."""
-    return render_template('index.html')
+    """Render the home page with featured auctions and auctions about to end."""
+    now = datetime.now()
+    with get_db_connection() as conn:
+        # Get auctions that are marked as featured and still active.
+        featured_auctions = conn.execute(
+            "SELECT * FROM cars WHERE auction_end_time > ? AND featured = 1",
+            (now,)
+        ).fetchall()
+        # Get auctions that are ending soon (within the next 24 hours).
+        ending_soon = conn.execute(
+            "SELECT * FROM cars WHERE auction_end_time > ? AND auction_end_time < ?",
+            (now, now + timedelta(hours=24))
+        ).fetchall()
+
+        # Build a dictionary of car images for all auctions.
+        car_images = {}
+        for auction in list(featured_auctions) + list(ending_soon):
+            images = conn.execute(
+                "SELECT image_path FROM car_images WHERE car_id = ?",
+                (auction['id'],)
+            ).fetchall()
+            car_images[auction['id']] = [img['image_path'] for img in images]
+
+    return render_template('index.html', featured_auctions=featured_auctions, ending_soon=ending_soon, car_images=car_images)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -221,6 +243,7 @@ def car_listing():
         return redirect(url_for('cars_for_sale'))
 
     return render_template('car_listing.html')
+
 @app.route('/cars_for_sale')
 def cars_for_sale():
     """Display all cars with active auctions."""
@@ -246,6 +269,7 @@ def cars_for_sale():
             car_images[car['id']] = [image['image_path'] for image in images]
 
     return render_template('cars_for_sale.html', cars=cars, car_images=car_images)
+
 @app.route('/car-details/<int:car_id>')
 def car_details(car_id):
     """Display detailed information about a specific car."""
@@ -334,13 +358,16 @@ def admin_dashboard():
     with get_db_connection() as conn:
         users = conn.execute('SELECT * FROM users').fetchall()
         cars = conn.execute('''
-            SELECT cars.id, cars.title, cars.current_bid, cars.auction_end_time, users.email AS highest_bidder_email
+            SELECT cars.id, cars.title, cars.current_bid, cars.auction_end_time,
+                   cars.featured,
+                   users.email AS highest_bidder_email
             FROM cars
             LEFT JOIN users ON cars.highest_bidder = users.id
         ''').fetchall()
         messages = conn.execute('SELECT * FROM contact_messages').fetchall()
 
     return render_template('admin_dashboard.html', users=users, cars=cars, messages=messages)
+
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
@@ -386,7 +413,6 @@ def delete_message(message_id):
     flash('Message deleted successfully.', 'success')
     return redirect(url_for('admin_dashboard'))
 
-
 @app.route('/admin/delete-auction/<int:car_id>', methods=['POST'])
 def delete_auction(car_id):
     """Allow an admin to delete an auction, including removing images."""
@@ -405,7 +431,6 @@ def delete_auction(car_id):
         conn.execute('DELETE FROM cars WHERE id = ?', (car_id,))
 
     return redirect(url_for('admin_dashboard'))
-
 
 @app.route('/admin/update_auction_time/<int:car_id>', methods=['POST'])
 def update_auction_time(car_id):
@@ -435,6 +460,33 @@ def update_auction_time(car_id):
         flash('An error occurred while updating the auction time.', 'danger')
 
     return redirect(url_for('admin_dashboard'))
+
+# --- New Admin Routes for Featuring Auctions ---
+
+@app.route('/admin/feature_auction/<int:car_id>', methods=['POST'])
+def feature_auction(car_id):
+    """Mark an auction as featured."""
+    if 'user_id' not in session or not is_admin_user():
+        flash('Access denied. Admins only.', 'danger')
+        return redirect(url_for('home'))
+    with get_db_connection() as conn:
+        conn.execute('UPDATE cars SET featured = 1 WHERE id = ?', (car_id,))
+        conn.commit()  # <-- Make sure to commit the change
+    flash('Auction marked as featured.', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/unfeature_auction/<int:car_id>', methods=['POST'])
+def unfeature_auction(car_id):
+    """Remove the featured mark from an auction."""
+    if 'user_id' not in session or not is_admin_user():
+        flash('Access denied. Admins only.', 'danger')
+        return redirect(url_for('home'))
+    with get_db_connection() as conn:
+        conn.execute('UPDATE cars SET featured = 0 WHERE id = ?', (car_id,))
+        conn.commit()  # <-- Commit the change
+    flash('Auction unfeatured.', 'info')
+    return redirect(url_for('admin_dashboard'))
+
 
 # ------------------------------------------------------------------------------
 # 5. Main Entry

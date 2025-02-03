@@ -1,100 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Auction Platform</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-<style>
-/* Add responsive styles here */
-body { margin: 0; font-family: Arial, sans-serif; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carsfy - Buy & Sell Cars</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-blue-500 text-white">
-    <!-- Header with Background Image -->
-    <header class="relative bg-cover bg-center h-64 flex flex-col justify-center items-center text-white"
-            style="background-image: url('{{ url_for('static', filename='assets/images/headerimage.jpg') }}');">
-        <div class="absolute inset-0 bg-blue-800 opacity-60"></div>
-        <div class="relative z-10 text-center">
-            <h1 class="text-4xl font-bold mb-2">Welcome to the Car Auction Platform</h1>
-            <p class="text-lg">Find the car of your dreams or list your own!</p>
-        </div>
-        <nav class="relative z-10 mt-4">
-            <ul class="flex space-x-8">
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('car_listing') }}">List Your Car</a></li>
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a>
-                </li>
-                {% if session.get('user_id') %}
-                {% if session.get('user_id') %}
-                {% if is_admin_user() %}
-                <!-- Admin Tab -->
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('admin_dashboard') }}">Admin</a></li>
-                {% endif %}
-                {% endif %}
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('login') }}">Login</a></li>
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('register') }}">Register</a></li>
-                {% endif %}
-                <li><a class="text-white hover:text-gray-300" href="{{ url_for('contact_form') }}">Contact</a></li>
-            </ul>
-        </nav>
+<body class="bg-gray-100">
 
-    </header>
-    <!-- Website Description -->
-    <section class="p-8 text-center bg-white text-blue-500">
-        <h2 class="text-2xl font-semibold mb-4">About Our Platform</h2>
-        <p class="max-w-2xl mx-auto">
-            Our Car Auction Platform provides an easy, secure, and reliable way to buy and sell cars. Whether you're looking to
-            find your next vehicle or place your car up for auction, we ensure a smooth experience with the tools and resources you need.
-            Start your journey with us today!
-        </p>
-    </section>
-    <!-- Tips and Tricks Section -->
-    <section class="p-8 text-center bg-gray-100 text-blue-500">
-        <h2 class="text-2xl font-semibold mb-4">Car Buying and Selling Tips</h2>
-        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold">Tip #1: Know the Car’s History</h3>
-                <p class="mt-2 text-gray-700">Always request a detailed history report when buying a used car. This includes any past accidents, repairs, and mileage verification.</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold">Tip #2: Set a Fair Price</h3>
-                <p class="mt-2 text-gray-700">When selling your car, research similar models to determine a competitive price. A fair price attracts more bidders and potential buyers.</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold">Tip #3: Inspect the Car Thoroughly</h3>
-                <p class="mt-2 text-gray-700">Look at the car's exterior, interior, and under the hood. Ensure the engine and other key components are in good condition.</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold">Tip #4: Understand Auction Rules</h3>
-                <p class="mt-2 text-gray-700">Familiarize yourself with the auction process, bid increments, and terms to make informed decisions.</p>
-            </div>
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full bg-white shadow-md z-50 p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-600">Carsfy</h1>
+      <ul class="hidden md:flex space-x-6">
+        <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('home') }}">Home</a></li>
+        <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('cars_for_sale') }}">Cars for Sale</a></li>
+        {% if 'user_id' in session %}
+          <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('car_listing') }}">List Your Car</a></li>
+          <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+          <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('login') }}">Login</a></li>
+          <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+        <li><a class="text-gray-800 hover:text-blue-500" href="{{ url_for('contact_form') }}">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="flex flex-col justify-center items-center text-center h-screen bg-cover bg-center relative"
+           style="background-image: url('https://source.unsplash.com/1600x900/?car');">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="relative z-10 text-white">
+      <h1 class="text-5xl font-bold">Find Your Dream Car Today</h1>
+      <p class="text-xl mt-4">Best deals on premium cars. List yours now!</p>
+      <a href="{{ url_for('cars_for_sale') }}" class="mt-6 inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700">
+        Browse Cars
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Auctions Section -->
+  <section class="p-6 bg-white">
+    <h2 class="text-3xl font-bold text-center text-green-600 mb-6">Featured Auctions</h2>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {% for auction in featured_auctions %}
+        <div class="bg-gray-50 p-4 rounded-lg shadow-lg">
+          {% if car_images[auction.id] %}
+            <img src="{{ url_for('static', filename=car_images[auction.id][0]) }}" alt="Car Image" class="rounded-lg w-full h-48 object-cover">
+          {% endif %}
+          <h2 class="text-xl font-bold mt-2">{{ auction.title }}</h2>
+          <p class="text-gray-700">{{ auction.description }}</p>
+          <p class="text-gray-800 font-semibold">
+            Current Bid: €{{ auction.current_bid if auction.current_bid else auction.starting_price }}
+          </p>
+          <a href="{{ url_for('car_details', car_id=auction.id) }}"
+             class="block bg-green-500 text-white mt-4 py-2 px-4 text-center rounded-lg hover:bg-green-600">
+            Bid Now
+          </a>
         </div>
-    </section>
-    <!-- FAQ Section -->
-    <section class="p-8 bg-white text-blue-500">
-        <h2 class="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
-        <div class="max-w-2xl mx-auto">
-            <div class="faq-question cursor-pointer">What is a car auction?</div>
-            <div class="faq-answer hidden">A car auction is where buyers place competitive bids on cars...</div>
-            <div class="faq-question cursor-pointer mt-4">How do I participate in an auction?</div>
-            <div class="faq-answer hidden">To participate, create an account, browse cars, and place a bid.</div>
-        </div>
-    </section>
-    <!-- Footer -->
-    <footer id="contact" class="bg-blue-600 text-white p-8 text-center">
-        <h2 class="text-2xl font-semibold">Contact Us</h2>
-        <p>Email: support@carauction.com</p>
-        <p>Phone: 07 n-am cartela</p>
-    </footer>
-    <script>
-        // FAQ Toggle Function
-        document.querySelectorAll('.faq-question').forEach(item => {
-            item.addEventListener('click', function() {
-                this.nextElementSibling.classList.toggle('hidden');
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- About to End Auctions Section -->
+  <section class="p-6">
+    <h2 class="text-3xl font-bold text-center text-red-600 mb-6">About to End Auctions</h2>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {% for auction in ending_soon %}
+        <div class="bg-white p-4 rounded-lg shadow-lg">
+          {% if car_images[auction.id] %}
+            <img src="{{ url_for('static', filename=car_images[auction.id][0]) }}" alt="Car Image" class="rounded-lg w-full h-48 object-cover">
+          {% endif %}
+          <h2 class="text-xl font-bold mt-2">{{ auction.title }}</h2>
+          <p class="text-gray-700">
+            Auction Ends In: <span id="timer_{{ auction.id }}"></span>
+          </p>
+          <script>
+            window.addEventListener("DOMContentLoaded", function() {
+              startCountdown("{{ auction.auction_end_time }}", "timer_{{ auction.id }}");
             });
-        });
-    </script>
+          </script>
+          <a href="{{ url_for('car_details', car_id=auction.id) }}"
+             class="block bg-red-500 text-white mt-4 py-2 px-4 text-center rounded-lg hover:bg-red-600">
+            Bid Now
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <script>
+    function startCountdown(endTime, elementId) {
+      const timerElement = document.getElementById(elementId);
+      const interval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = new Date(endTime).getTime() - now;
+
+        if (distance <= 0) {
+          clearInterval(interval);
+          timerElement.innerHTML = "Auction Ended";
+        } else {
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          if (days > 0) {
+            timerElement.innerHTML = `${days}d ${hours}h`;
+          } else if (hours > 0) {
+            timerElement.innerHTML = `${hours}h ${minutes}m`;
+          } else {
+            timerElement.innerHTML = `${minutes}m ${seconds}s`;
+          }
+        }
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
