@@ -4,7 +4,7 @@ import smtplib
 from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+import requests
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for, session, flash
@@ -33,9 +33,6 @@ def get_db_connection():
     return conn
 
 def get_photos():
-    import requests
-
-    ACCESS_KEY = os.environ.get('UNSPLASH_API')
     url = "https://api.unsplash.com/search/photos"
 
     params = {
@@ -45,7 +42,7 @@ def get_photos():
     }
 
     headers = {
-        "Authorization": f"Client-ID {ACCESS_KEY}"
+        "Authorization": f"Client-ID {os.environ.get('UNSPLASH_API')}"
     }
 
     response = requests.get(url, headers=headers, params=params)
